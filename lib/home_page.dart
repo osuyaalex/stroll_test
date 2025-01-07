@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:stroll_test/constants/STColors.dart';
 import 'package:stroll_test/extensions/sizes_ext.dart';
 
@@ -15,6 +17,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   bool _isExpanded = false;
+  int? _selectedIndex;
+  final List<Map<String, String>> _options = [
+    {'label': 'A', 'text': 'The peace in the early mornings'},
+    {'label': 'B', 'text': 'The magical golden hours'},
+    {'label': 'C', 'text': 'Wind-down time after dinners'},
+    {'label': 'D', 'text': 'The serenity past midnight'},
+  ];
 
   @override
   void initState() {
@@ -56,29 +65,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
           Positioned(
             bottom: 0,
-            child: Container(
-              width: 100.pW,
-              height: 35.pH,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.black,
-                    Colors.black.withOpacity(0.6),
-                    Colors.transparent,
-                  ],
-                  stops: const [
-                    0.0,
-                    0.7,
-                    0.9,
-                    1.0,
-                  ],
-                ),
-              ),
-            ),
+            child: _blackGradient()
           ),
+          Positioned(
+              bottom: 35.pH,
+              left: 20.pW,
+              child: Container(
+                padding: EdgeInsets.fromLTRB( 10.pW, 6, 6,6),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: STColors.profileBorder
+                ),
+                child: Text('Angela, 28',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+          ),
+          Positioned(
+              bottom: 31.pH,
+              left: 6.pW,
+              child: CircleAvatar(
+                radius: 40,
+                backgroundColor: STColors.profileBorder,
+                child: CircleAvatar(
+                  radius: 34,
+                  backgroundImage: AssetImage('assets/Image.png'),
+                ),
+              )
+          ),
+
         ],
       ),
     );
@@ -100,10 +118,64 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
   }
 
+  Widget _blackGradient(){
+    return Container(
+      width: 100.pW,
+      height: 45.pH,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            Colors.black,
+            Colors.black,
+            Colors.black.withOpacity(0.6),
+            Colors.transparent,
+          ],
+          stops: const [
+            0.0,
+            0.7,
+            0.9,
+            1.0,
+          ],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding:  EdgeInsets.only(top:11.pH,left: 30.pW),
+            child: SizedBox(
+              width: 55.pW,
+              child: Text('What is your favourite time of the day?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w600
+              ),
+              ),
+            ),
+          ),
+          1.gap,
+          Padding(
+            padding:  EdgeInsets.only(left: 20.pW),
+            child: Text('"Mine is definitely the peace in the morning"',
+            style: GoogleFonts.montserrat(
+              color: STColors.primary,
+              fontStyle: FontStyle.italic,
+              fontSize: 10
+            ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _wavePicture(){
     return Container(
       padding: EdgeInsets.only(top: 10.pH),
-      height: 70.pH,
+      height: 64.pH,
       width: 100.pW,
       decoration: BoxDecoration(
           image: DecorationImage(
