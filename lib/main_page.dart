@@ -56,19 +56,19 @@ class _MainPageState extends State<MainPage> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Colors.black87,
-            icon: SvgPicture.asset('assets/Card.svg'),
+            icon: SvgPicture.asset('assets/Card.svg',height: 40,),
               label: ''
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/bonfire.svg'),
+            icon: SvgPicture.asset('assets/bonfire.svg',height: 40,),
               label: ''
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/Chat.svg'),
+            icon: SvgPicture.asset('assets/Chat.svg',height: 40,),
             label: ''
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/User.svg'),
+            icon: SvgPicture.asset('assets/User.svg',height: 40,),
               label: ''
           ),
         ],
