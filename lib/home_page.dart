@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           1.gap,
           Padding(
             padding:  EdgeInsets.only(left: 20.pW),
-            child: Text('"Mine is definitely the peace in the morning" ',
+            child: Text('"Mine is definitely the peace in the morning"',
             style: GoogleFonts.montserrat(
               color: STColors.primary,
               fontStyle: FontStyle.italic,
