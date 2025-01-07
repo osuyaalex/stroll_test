@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroll_test/chat_page.dart';
 import 'package:stroll_test/hot_page.dart';
@@ -30,6 +31,18 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
+  }
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
@@ -47,11 +60,11 @@ class _MainPageState extends State<MainPage> {
               label: ''
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/Vector.svg'),
+            icon: SvgPicture.asset('assets/bonfire.svg'),
               label: ''
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/Icons.svg'),
+            icon: SvgPicture.asset('assets/Chat.svg'),
             label: ''
           ),
           BottomNavigationBarItem(

@@ -12,10 +12,12 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _animations;
   bool _isExpanded = false;
   int? _selectedIndex;
   final List<Map<String, String>> _options = [
@@ -28,11 +30,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    _controllers = List.generate(
+      _options.length,
+          (index) => AnimationController(
+        duration: const Duration(milliseconds: 800),
+        vsync: this,
+      ),
+    );
+    _animations = _controllers.map((controller) {
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: controller,
+        curve: Curves.easeOutBack,
+      ));
+    }).toList();
+    Future.delayed(Duration(milliseconds: 100), () {
+      for (int i = 0; i < _controllers.length; i++) {
+        Future.delayed(
+          Duration(milliseconds: 100 * i),
+              () => _controllers[i].forward(),
+        );
+      }
+    });
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -68,7 +93,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             child: _blackGradient()
           ),
           Positioned(
-              bottom: 35.pH,
+              bottom: 36.pH,
               left: 20.pW,
               child: Container(
                 padding: EdgeInsets.fromLTRB( 10.pW, 6, 6,6),
@@ -104,6 +129,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     _controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -121,7 +149,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _blackGradient(){
     return Container(
       width: 100.pW,
-      height: 45.pH,
+      height: 46.5.pH,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
@@ -151,6 +179,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
+                height: 1.1,
                 fontWeight: FontWeight.w600
               ),
               ),
@@ -167,6 +196,118 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),
             ),
           ),
+          1.gap,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: StaggeredGridView.countBuilder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              itemCount: _options.length,
+              itemBuilder: (context, index){
+                bool isSelected = _selectedIndex == index;
+                return AnimatedBuilder(
+                    animation: _animations[index],
+                    builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(0, 50 * (1 - _animations[index].value)),
+                      child: Transform.scale(
+                        scale: _animations[index].value,
+                        child: FadeTransition(
+                          opacity: _animations[index],
+                          child: child,
+                        ),
+                      ),
+                    );
+                    },
+                  child: GestureDetector(
+                      onTap: (){
+                        _controllers[index].reverse().then((_) {
+                          _controllers[index].forward();
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                        });
+                      },
+                      child: _optionContainer(isSelected, index)
+                  ),
+                );
+              },
+                staggeredTileBuilder:  (context) => const StaggeredTile.fit(1),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0,horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Pick your option.\nSee who has a similar mind.',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white
+                ),
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset('assets/Poll Act. Buttons.svg',height: 30,),
+                    1.gap,
+                    SvgPicture.asset('assets/Poll Act. Buttons (1).svg',height: 30,),
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+  Widget _optionContainer(bool isSelected, int index){
+    return Container(
+      //margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: STColors.optionCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? STColors.primaryBorder : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+              color: isSelected ? STColors.primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(
+                width: 2,
+                color: isSelected ? STColors.primary : Colors.grey.shade500
+              )
+            ),
+            child: Center(
+              child: Text(
+                _options[index]['label']!,
+                style: TextStyle(
+                  color:Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              _options[index]['text']!,
+              style: TextStyle(
+                fontSize: 9,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -175,7 +316,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _wavePicture(){
     return Container(
       padding: EdgeInsets.only(top: 10.pH),
-      height: 64.pH,
+      height: 62.pH,
       width: 100.pW,
       decoration: BoxDecoration(
           image: DecorationImage(
