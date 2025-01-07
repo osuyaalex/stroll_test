@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stroll_test/main_page.dart';
 
 void main() {
@@ -27,6 +28,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
+          fontFamily: 'ProximaNova',
+          // textTheme: GoogleFonts.montserratTextTheme(
+          //   Theme.of(context).textTheme,
+          // ),
         ),
         home: const MainPage(),
       ),
